@@ -19,6 +19,10 @@ public class Order {
         return dishes.stream().mapToInt(Dish::getDuration).sum();
     }
 
+    public List<Dish> getDishes() {
+        return dishes;
+    }
+
     public boolean isEmpty() {
         return dishes.isEmpty();
     }

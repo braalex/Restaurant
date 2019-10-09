@@ -14,7 +14,7 @@ public class Advertisement {
         this.initialAmount = initialAmount;
         this.hits = hits;
         this.duration = duration;
-        amountPerOneDisplaying = initialAmount / hits;
+        amountPerOneDisplaying = hits > 0 ? initialAmount / hits : 0;
     }
 
     public String getName() {
@@ -25,12 +25,22 @@ public class Advertisement {
         return duration;
     }
 
+    public int getHits() {
+        return hits;
+    }
+
     public long getAmountPerOneDisplaying() {
         return amountPerOneDisplaying;
     }
 
-    public void revalidate() throws UnsupportedOperationException {
-        if (hits < 1) throw new UnsupportedOperationException();
+    public void revalidate() throws NoVideoAvailableException {
+        if (hits < 1) throw new NoVideoAvailableException();
         hits--;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s is displaying... %d, %d",
+                name, amountPerOneDisplaying, amountPerOneDisplaying * 1000 / duration);
     }
 }
