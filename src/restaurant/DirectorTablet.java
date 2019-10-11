@@ -1,5 +1,6 @@
 package restaurant;
 
+import ad.StatisticAdvertisementManager;
 import statistic.StatisticManager;
 
 import java.util.Locale;
@@ -24,7 +25,13 @@ public class DirectorTablet {
                 });
     }
 
-    public void printActiveVideoSet() {}
+    public void printActiveVideoSet() {
+        StatisticAdvertisementManager.getInstance().getActiveVideos()
+                .forEach((k, v) -> ConsoleHelper.writeMessage(String.format("%s - %d", k, v)));
+    }
 
-    public void printArchivedVideoSet() {}
+    public void printArchivedVideoSet() {
+        StatisticAdvertisementManager.getInstance().getArchivedVideos()
+                .forEach(ConsoleHelper::writeMessage);
+    }
 }

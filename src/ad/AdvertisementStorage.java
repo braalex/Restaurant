@@ -10,8 +10,10 @@ public class AdvertisementStorage {
     private AdvertisementStorage() {
         Object someContent = new Object();
         add(new Advertisement(someContent, "First video", 5000, 100, 3 * 60));
-        add(new Advertisement(someContent, "Second video", 100, 10, 15 * 60));
+        add(new Advertisement(someContent, "Second video", 100, 6, 15 * 60));
+        add(new Advertisement(someContent, "видео", 200, 4, 10 * 60));
         add(new Advertisement(someContent, "Third video", 400, 2, 10 * 60));
+        add(new Advertisement(someContent, "first vid", 500, 10, 5 * 60));
     }
 
     public static AdvertisementStorage getInstance() {

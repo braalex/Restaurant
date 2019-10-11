@@ -13,6 +13,8 @@ public class Restaurant {
         cook1.addObserver(waiter);
         Order order1 = tablet1.createOrder();
         Order order2 = tablet1.createOrder();
+        Order order3 = tablet1.createOrder();
+        Order order4 = tablet1.createOrder();
 
         DirectorTablet dirTab = new DirectorTablet();
         dirTab.printAdvertisementProfit();
