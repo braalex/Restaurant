@@ -3,6 +3,7 @@ package restaurant;
 import ad.AdvertisementManager;
 import ad.NoVideoAvailableException;
 import kitchen.Order;
+import kitchen.TestOrder;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -19,23 +20,38 @@ public class Tablet extends Observable {
     }
 
     public Order createOrder() {
-        Order order = null;
         try {
-            order = new Order(this);
-            if (!order.isEmpty()) {
-                ConsoleHelper.writeMessage(order.toString());
-                setChanged();
-                notifyObservers(order);
+            Order order = new Order(this);
+            checkOrder(order);
+            return order;
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Console is unavailable.");
+            return null;
+        }
+    }
+
+    public void createTestOrder() {
+        try {
+            checkOrder(new TestOrder(this));
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Console is unavailable.");
+        }
+    }
+
+    public void checkOrder(Order order) {
+        if (!order.isEmpty()) {
+            ConsoleHelper.writeMessage(order.toString());
+            setChanged();
+            notifyObservers(order);
+            try {
                 adManager = new AdvertisementManager(order.getTotalCookingTime() * 60);
                 adManager.processVideos();
+            } catch (NoVideoAvailableException exc) {
+                logger.log(Level.INFO, "No video is available for order " + order);
             }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Console is unavailable.");
-        } catch (NoVideoAvailableException ex) {
-            logger.log(Level.INFO, "No video is available for order " + order);
         }
-        return order;
     }
+
 
     @Override
     public String toString() {
