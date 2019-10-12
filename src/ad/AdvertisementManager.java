@@ -17,7 +17,7 @@ public class AdvertisementManager {
     }
 
     public void processVideos() throws NoVideoAvailableException {
-        if (storage.list().isEmpty()) throw new NoVideoAvailableException();
+        if (storage.list() == null || storage.list().isEmpty()) throw new NoVideoAvailableException();
         List<Advertisement> videos = new ArrayList<>();
         for (Object vid : storage.list()) {
             Advertisement ad = (Advertisement) vid;
