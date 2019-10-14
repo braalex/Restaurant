@@ -3,6 +3,7 @@ package restaurant;
 import kitchen.Cook;
 import kitchen.Order;
 import kitchen.Waiter;
+import statistic.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +13,19 @@ public class Restaurant {
     private static List<Tablet> tablets = new ArrayList<>();
 
     public static void main(String[] args) {
-        Tablet tablet1 = new Tablet(1);
-        Tablet tablet2 = new Tablet(2);
-        Tablet tablet3 = new Tablet(3);
-        tablets.add(tablet1);
-        tablets.add(tablet2);
-        tablets.add(tablet3);
+        OrderManager orderManager = new OrderManager();
         Cook cook1 = new Cook("Bender");
         Cook cook2 = new Cook("Paul");
-        tablet1.addObserver(cook1);
-        tablet2.addObserver(cook2);
-        tablet3.addObserver(cook1);
+        StatisticManager.getInstance().register(cook1);
+        StatisticManager.getInstance().register(cook2);
+        for (int i = 1; i < 6; i++) {
+            Tablet tablet = new Tablet(i);
+            tablets.add(tablet);
+            tablet.addObserver(orderManager);
+        }
         Waiter waiter = new Waiter();
         cook1.addObserver(waiter);
+        cook2.addObserver(waiter);
 
         Thread t = new Thread(new RandomOrderGeneratorTask(tablets, ORDER_CREATING_INTERVAL));
         t.start();

@@ -1,29 +1,36 @@
 package kitchen;
 
 import restaurant.ConsoleHelper;
-import restaurant.Tablet;
 import statistic.StatisticManager;
 import statistic.event.CookedOrderEventDataRow;
 
 import java.util.Observable;
-import java.util.Observer;
 
-public class Cook extends Observable implements Observer {
+public class Cook extends Observable {
     private String name;
+    private boolean busy;
+
+    public boolean isBusy() {
+        return busy;
+    }
 
     public Cook(String name) {
         this.name = name;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        Tablet tablet = (Tablet) o;
-        Order order = (Order) arg;
-        ConsoleHelper.writeMessage("Start cooking - " + order);
+    public void startCookingOrder(Order order) {
+        busy = true;
         StatisticManager.getInstance().register(new CookedOrderEventDataRow
-                (tablet.toString(), name, order.getTotalCookingTime(), order.getDishes()));
+                (order.getTablet().toString(), name, order.getTotalCookingTime(), order.getDishes()));
+        ConsoleHelper.writeMessage("Start cooking - " + order);
+        try {
+            Thread.sleep(order.getTotalCookingTime() * 10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setChanged();
         notifyObservers(order);
+        busy = false;
     }
 
     @Override
