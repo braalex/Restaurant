@@ -3,29 +3,39 @@ package restaurant;
 import kitchen.Cook;
 import kitchen.Order;
 import kitchen.Waiter;
-import statistic.StatisticManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Restaurant {
     private static final int ORDER_CREATING_INTERVAL = 100;
-    private static List<Tablet> tablets = new ArrayList<>();
+    private static final LinkedBlockingQueue<Order> orderQueue = new LinkedBlockingQueue<>();
 
     public static void main(String[] args) {
-        OrderManager orderManager = new OrderManager();
-        Cook cook1 = new Cook("Bender");
+        Waiter waiter = new Waiter();
+
+        Cook cook1 = new Cook("Tony");
+        cook1.setQueue(orderQueue);
+        cook1.addObserver(waiter);
+        Thread c1 = new Thread(cook1);
+        c1.setDaemon(true);
+
         Cook cook2 = new Cook("Paul");
-        StatisticManager.getInstance().register(cook1);
-        StatisticManager.getInstance().register(cook2);
+        cook2.setQueue(orderQueue);
+        cook2.addObserver(waiter);
+        Thread c2 = new Thread(cook2);
+        c2.setDaemon(true);
+
+        c1.start();
+        c2.start();
+
+        List<Tablet> tablets = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
             Tablet tablet = new Tablet(i);
+            tablet.setQueue(orderQueue);
             tablets.add(tablet);
-            tablet.addObserver(orderManager);
         }
-        Waiter waiter = new Waiter();
-        cook1.addObserver(waiter);
-        cook2.addObserver(waiter);
 
         Thread t = new Thread(new RandomOrderGeneratorTask(tablets, ORDER_CREATING_INTERVAL));
         t.start();

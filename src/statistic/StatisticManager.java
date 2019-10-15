@@ -1,6 +1,5 @@
 package statistic;
 
-import kitchen.Cook;
 import statistic.event.CookedOrderEventDataRow;
 import statistic.event.EventDataRow;
 import statistic.event.EventType;
@@ -12,13 +11,8 @@ import java.util.*;
 public class StatisticManager {
     private static StatisticManager instance = new StatisticManager();
     private StatisticStorage statisticStorage = new StatisticStorage();
-    private Set<Cook> cooks = new HashSet<>();
 
     private StatisticManager() {
-    }
-
-    public Set<Cook> getCooks() {
-        return cooks;
     }
 
     public static StatisticManager getInstance() {
@@ -27,10 +21,6 @@ public class StatisticManager {
 
     public void register(EventDataRow data) {
         statisticStorage.put(data);
-    }
-
-    public void register(Cook cook) {
-        cooks.add(cook);
     }
 
     public Map<String, Long> getAdvertisementProfit() {
@@ -55,7 +45,7 @@ public class StatisticManager {
             String date = sdf.format(event.getDate());
             CookedOrderEventDataRow cookEvent = (CookedOrderEventDataRow) event;
             String cookName = cookEvent.getCookName();
-            int time = cookEvent.getTime();
+            int time = cookEvent.getTime() / 60;
 
             if (!map.containsKey(date)) {
                 Map<String, Integer> cookWorkTime = new TreeMap<>();
